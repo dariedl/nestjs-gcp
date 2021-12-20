@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SbtLocalSettings">
+    <option name="projectSyncType">
+      <map>
+        <entry key="$USER_HOME$/dev/education/LSL-P-lightbend-scala-language-professional-3.20200215/exercises" value="PREVIEW" />
+        <entry key="$USER_HOME$/dev/education/LSL-P-lightbend-scala-language-professional-3.20200215/exercises/exercises" value="PREVIEW" />
+        <entry key="$USER_HOME$/dev/projects/bmw/csi-data-migrator" value="PREVIEW" />
+        <entry key="$USER_HOME$/dev/projects/bmw/vcs" value="PREVIEW" />
+      </map>
+    </option>
+  </component>
+  <component name="ScalaSbtSettings">
+    <option name="customVMPath" />
+  </component>
+</project>
