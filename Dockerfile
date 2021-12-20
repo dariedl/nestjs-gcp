@@ -17,6 +17,7 @@ RUN npm install
 COPY . ./
 
 # Build the application
+RUN npx prisma generate
 RUN npm run build
 
 # Run the web service on container startup.
