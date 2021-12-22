@@ -59,6 +59,12 @@ resource "google_sql_database_instance" "master" {
   }
 }
 
+resource "random_string" "random" {
+  length           = 16
+  special          = true
+  override_special = "/@£$"
+}
+
 resource "google_sql_user" "users" {
   provider = google-beta
 
@@ -94,68 +100,63 @@ resource "google_vpc_access_connector" "connector" {
 }
 
 # Cloud Run service
-resource "google_cloud_run_service" "gcr_service" {
-  name       = "mygcrservice"
-  provider   = google-beta
-  location   = "europe-west3"
-  depends_on = [google_sql_user.users]
+# resource "google_cloud_run_service" "gcr_service" {
+#   name       = "mygcrservice"
+#   provider   = google-beta
+#   location   = "europe-west3"
+#   depends_on = [google_sql_user.users]
 
-  template {
-    spec {
-      containers {
-        image = "europe-west3-docker.pkg.dev/${local.project_id}/nestjs-gcp/nestjs-gcp-app:latest"
-        resources {
-          limits = {
-            cpu    = "1000m"
-            memory = "512M"
-          }
-        }
-        env {
-          name  = "DATABASE_URL"
-          value = "postgresql://${google_sql_user.users.name}:${google_sql_user.users.password}@${google_sql_database_instance.master.private_ip_address}:5432/${google_sql_database_instance.master.name}"
-        }
-      }
-      # the service uses this SA to call other Google Cloud APIs
-      # service_account_name = myservice_runtime_sa
-    }
+#   template {
+#     spec {
+#       containers {
+#         image = "europe-west3-docker.pkg.dev/${local.project_id}/nestjs-gcp/nestjs-gcp-app:latest"
+#         resources {
+#           limits = {
+#             cpu    = "1000m"
+#             memory = "512M"
+#           }
+#         }
+#         env {
+#           name  = "DATABASE_URL"
+#           value = "postgresql://${google_sql_user.users.name}:${google_sql_user.users.password}@${google_sql_database_instance.master.private_ip_address}:5432/${google_sql_database_instance.master.name}"
+#         }
+#       }
+#       # the service uses this SA to call other Google Cloud APIs
+#       # service_account_name = myservice_runtime_sa
+#     }
 
-    metadata {
-      annotations = {
-        # Limit scale up to prevent any cost blow outs!
-        "autoscaling.knative.dev/maxScale" = "1"
-        # Use the VPC Connector
-        "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.connector.name
-        # all egress from the service should go through the VPC Connector
-        "run.googleapis.com/vpc-access-egress" = "all"
-      }
-    }
-  }
-  autogenerate_revision_name = true
-}
+#     metadata {
+#       annotations = {
+#         # Limit scale up to prevent any cost blow outs!
+#         "autoscaling.knative.dev/maxScale" = "1"
+#         # Use the VPC Connector
+#         "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.connector.name
+#         # all egress from the service should go through the VPC Connector
+#         "run.googleapis.com/vpc-access-egress" = "all"
+#       }
+#     }
+#   }
+#   autogenerate_revision_name = true
+# }
 
-resource "random_string" "random" {
-  length           = 16
-  special          = true
-  override_special = "/@£$"
-}
 
-# Create public access
-data "google_iam_policy" "noauth" {
-  binding {
-    role = "roles/run.invoker"
-    members = [
-      "allUsers",
-    ]
-  }
-}
-# Enable public access on Cloud Run service
-resource "google_cloud_run_service_iam_policy" "noauth" {
-  location    = google_cloud_run_service.gcr_service.location
-  project     = google_cloud_run_service.gcr_service.project
-  service     = google_cloud_run_service.gcr_service.name
-  policy_data = data.google_iam_policy.noauth.policy_data
-}
-# Return service URL
-output "url" {
-  value = google_cloud_run_service.gcr_service.status[0].url
-}
+# # Create public access
+# data "google_iam_policy" "noauth" {
+#   binding {
+#     role = "roles/run.invoker"
+#     members = [
+#       "allUsers",
+#     ]
+#   }
+# }
+# # Enable public access on Cloud Run service
+# resource "google_cloud_run_service_iam_policy" "noauth" {
+#   location    = google_cloud_run_service.gcr_service.location
+#   project     = google_cloud_run_service.gcr_service.project
+#   service     = google_cloud_run_service.gcr_service.name
+#   policy_data = data.google_iam_policy.noauth.policy_data
+# }
+# # Return service URL
+# output "url" {
+#   value = google_cloud_run_service.gcr_service.status[0].url
+# }

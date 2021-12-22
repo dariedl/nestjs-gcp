@@ -1,0 +1,12 @@
+{
+  "version": "0.8.3",
+  "stacks": {
+    "cdktf-test-google": {
+      "name": "cdktf-test-google",
+      "constructPath": "cdktf-test-google",
+      "workingDirectory": "stacks/cdktf-test-google",
+      "synthesizedStackPath": "stacks/cdktf-test-google/cdk.tf.json",
+      "annotations": []
+    }
+  }
+}

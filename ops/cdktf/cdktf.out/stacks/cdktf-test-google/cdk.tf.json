@@ -1,0 +1,117 @@
+{
+  "//": {
+    "metadata": {
+      "version": "0.8.3",
+      "stackName": "cdktf-test-google",
+      "backend": "gcs"
+    }
+  },
+  "terraform": {
+    "backend": {
+      "gcs": {
+        "bucket": "cdktf-lab-terraform-state-01",
+        "prefix": "terraform/state"
+      }
+    },
+    "required_providers": {
+      "google-beta": {
+        "version": "~> 3.90.1",
+        "source": "google-beta"
+      }
+    }
+  },
+  "provider": {
+    "google-beta": [
+      {
+        "project": "just-experience-335708",
+        "region": "europe-west1",
+        "zone": "europe-west1-a"
+      }
+    ]
+  },
+  "resource": {
+    "google_compute_network": {
+      "vpc_vpc_network_BF9C3612": {
+        "auto_create_subnetworks": false,
+        "name": "cdktf-test",
+        "provider": "google-beta",
+        "//": {
+          "metadata": {
+            "path": "cdktf-test-google/vpc/vpc_network",
+            "uniqueId": "vpc_vpc_network_BF9C3612"
+          }
+        }
+      }
+    },
+    "google_compute_global_address": {
+      "db_private_ip_address_D699A421": {
+        "address_type": "INTERNAL",
+        "name": "private-ip-address",
+        "network": "${google_compute_network.vpc_vpc_network_BF9C3612.id}",
+        "prefix_length": 16,
+        "purpose": "VPC_PEERING",
+        "//": {
+          "metadata": {
+            "path": "cdktf-test-google/db/private_ip_address",
+            "uniqueId": "db_private_ip_address_D699A421"
+          }
+        }
+      }
+    },
+    "google_service_networking_connection": {
+      "db_private_vpc_connection_B8083533": {
+        "network": "${google_compute_network.vpc_vpc_network_BF9C3612.id}",
+        "reserved_peering_ranges": [
+          "${google_compute_global_address.db_private_ip_address_D699A421.name}"
+        ],
+        "service": "servicenetworking.googleapis.com",
+        "//": {
+          "metadata": {
+            "path": "cdktf-test-google/db/private_vpc_connection",
+            "uniqueId": "db_private_vpc_connection_B8083533"
+          }
+        }
+      }
+    },
+    "google_sql_database_instance": {
+      "db_master_39E735CE": {
+        "database_version": "POSTGRES_11",
+        "deletion_protection": false,
+        "name": "nestjs-instance",
+        "region": "europe-west3",
+        "settings": {
+          "tier": "db-f1-micro",
+          "ip_configuration": {
+            "ipv4_enabled": false,
+            "private_network": "${google_compute_network.vpc_vpc_network_BF9C3612.id}"
+          }
+        },
+        "depends_on": [],
+        "//": {
+          "metadata": {
+            "path": "cdktf-test-google/db/master",
+            "uniqueId": "db_master_39E735CE"
+          }
+        }
+      }
+    },
+    "google_sql_user": {
+      "db_users_7C877B3F": {
+        "instance": "${google_sql_database_instance.db_master_39E735CE.name}",
+        "name": "me",
+        "password": "Y5MTIwODc5",
+        "//": {
+          "metadata": {
+            "path": "cdktf-test-google/db/users",
+            "uniqueId": "db_users_7C877B3F"
+          }
+        }
+      }
+    }
+  },
+  "output": {
+    "vpc_name_809BA51C": {
+      "value": "${google_compute_network.vpc_vpc_network_BF9C3612.name}"
+    }
+  }
+}
