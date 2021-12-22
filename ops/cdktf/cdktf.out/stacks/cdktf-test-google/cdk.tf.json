@@ -43,6 +43,34 @@
         }
       }
     },
+    "google_project_service": {
+      "vpc_vpcaccess_api_86002649": {
+        "disable_on_destroy": false,
+        "service": "vpcaccess.googleapis.com",
+        "provider": "google-beta",
+        "//": {
+          "metadata": {
+            "path": "cdktf-test-google/vpc/vpcaccess_api",
+            "uniqueId": "vpc_vpcaccess_api_86002649"
+          }
+        }
+      }
+    },
+    "google_vpc_access_connector": {
+      "vpc_connector_CE4D680C": {
+        "ip_cidr_range": "10.8.0.0/28",
+        "name": "lab-vpc-con",
+        "network": "cdktf-test",
+        "depends_on": [],
+        "provider": "google-beta",
+        "//": {
+          "metadata": {
+            "path": "cdktf-test-google/vpc/connector",
+            "uniqueId": "vpc_connector_CE4D680C"
+          }
+        }
+      }
+    },
     "google_compute_global_address": {
       "db_private_ip_address_D699A421": {
         "address_type": "INTERNAL",
@@ -101,7 +129,7 @@
       "db_users_7C877B3F": {
         "instance": "${google_sql_database_instance.db_master_39E735CE.name}",
         "name": "me",
-        "password": "I1MTQ3MDQ3",
+        "password": "aojuxnclq23wijr34IJsdlds",
         "provider": "google-beta",
         "//": {
           "metadata": {
@@ -110,11 +138,116 @@
           }
         }
       }
+    },
+    "google_sql_database": {
+      "db_database_485237BB": {
+        "instance": "${google_sql_database_instance.db_master_39E735CE.name}",
+        "name": "my-nestjs-db",
+        "provider": "google-beta",
+        "//": {
+          "metadata": {
+            "path": "cdktf-test-google/db/database",
+            "uniqueId": "db_database_485237BB"
+          }
+        }
+      }
+    },
+    "google_artifact_registry_repository": {
+      "nestjs-repo": {
+        "description": "example docker repository",
+        "format": "DOCKER",
+        "location": "europe-west3",
+        "repository_id": "nestjs-gcp",
+        "provider": "google-beta",
+        "//": {
+          "metadata": {
+            "path": "cdktf-test-google/nestjs-repo",
+            "uniqueId": "nestjs-repo"
+          }
+        }
+      }
+    },
+    "google_cloud_run_service": {
+      "nestjs_cdktf-service_4C1C7440": {
+        "autogenerate_revision_name": true,
+        "location": "europe-west3",
+        "name": "cdktf-service",
+        "template": {
+          "metadata": {
+            "annotations": {
+              "autoscalingKnativeDevMaxScale": "1",
+              "runGoogleapisComVpcAccessConnector": "${google_vpc_access_connector.vpc_connector_CE4D680C.name}",
+              "runGoogleapisComVpcAccessEgress": "all"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "image": "europe-west3-docker.pkg.dev/just-experience-335708/nestjs-gcp/nestjs-gcp-app:latest",
+                "env": [
+                  {
+                    "name": "DATABASE_URL",
+                    "value": "postgresql://${google_sql_user.db_users_7C877B3F.name}:${google_sql_user.db_users_7C877B3F.password}@${google_compute_global_address.db_private_ip_address_D699A421.address}:5432/${google_sql_database.db_database_485237BB.name}"
+                  }
+                ],
+                "resources": {
+                  "limits": {
+                    "cpu": "1000m",
+                    "memory": "512M"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "depends_on": [],
+        "provider": "google-beta",
+        "//": {
+          "metadata": {
+            "path": "cdktf-test-google/nestjs/cdktf-service",
+            "uniqueId": "nestjs_cdktf-service_4C1C7440"
+          }
+        }
+      }
+    },
+    "google_cloud_run_service_iam_policy": {
+      "noauth": {
+        "location": "${google_cloud_run_service.nestjs_cdktf-service_4C1C7440.location}",
+        "policy_data": "${data.google_iam_policy.nestjs_noauth_7E965346.policy_data}",
+        "project": "${google_cloud_run_service.nestjs_cdktf-service_4C1C7440.project}",
+        "service": "${google_cloud_run_service.nestjs_cdktf-service_4C1C7440.name}",
+        "//": {
+          "metadata": {
+            "path": "cdktf-test-google/nestjs/noauth_12",
+            "uniqueId": "noauth"
+          }
+        }
+      }
     }
   },
   "output": {
     "vpc_name_809BA51C": {
       "value": "${google_compute_network.vpc_network_A873BE34.name}"
+    }
+  },
+  "data": {
+    "google_iam_policy": {
+      "nestjs_noauth_7E965346": {
+        "binding": [
+          {
+            "members": [
+              "allUsers"
+            ],
+            "role": "roles/run.invoker"
+          }
+        ],
+        "//": {
+          "metadata": {
+            "path": "cdktf-test-google/nestjs/noauth",
+            "uniqueId": "nestjs_noauth_7E965346"
+          }
+        }
+      }
     }
   }
 }

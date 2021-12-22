@@ -1,8 +1,9 @@
 import { Construct } from "constructs";
 import { App, TerraformStack, GcsBackend } from "cdktf";
-import {  GoogleBetaProvider } from './.gen/providers/google-beta';
+import { GoogleArtifactRegistryRepository, GoogleBetaProvider } from './.gen/providers/google-beta';
 import {VPC} from './modules/network/vpc';
 import { Database } from "./modules/database/postgresql";
+import { NestJsMain } from "./modules/cloudrun/nestjsMain";
 
 class MyStack extends TerraformStack {
 
@@ -24,8 +25,25 @@ class MyStack extends TerraformStack {
     const vpc = new VPC(this, 'vpc', {
       name:  "cdktf-test", 
       provider});
-    const networkId = vpc.getId();
-    new Database(this, 'db', {networkId, provider});
+    const {vpcId, vpcConnectorName} = vpc.getConfig();
+    const db = new Database(this, 'db', {vpcId, provider});
+    const {connectionString, user} = db.getConfig()
+
+    new GoogleArtifactRegistryRepository(this, "nestjs-repo", {
+      description: "example docker repository",
+      format: "DOCKER",
+      location: "europe-west3",
+      repositoryId: "nestjs-gcp",
+      provider
+    });
+
+    new NestJsMain(this, 'nestjs', {
+      provider,
+      vpcConnectorName,
+      sqlUser: user,
+      dbConnectionUrl: connectionString,
+      projectId
+    })
   }
 }
 const app = new App();
