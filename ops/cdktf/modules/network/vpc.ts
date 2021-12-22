@@ -12,7 +12,7 @@ export class VPC extends Resource {
 
     constructor(scope: Construct, id: string, {provider, name}: VPCOptions) {
         super(scope, id);
-        this.vpc = new GoogleComputeNetwork(this, 'vpc_network', {
+        this.vpc = new GoogleComputeNetwork(this, 'network', {
             name: name,
             autoCreateSubnetworks: false,
             provider: provider

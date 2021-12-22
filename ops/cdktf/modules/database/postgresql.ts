@@ -1,14 +1,15 @@
-import { Resource } from "cdktf";
+import { Resource, TerraformProvider } from "cdktf";
 import { Construct } from "constructs";
 import { GoogleComputeGlobalAddress, GoogleServiceNetworkingConnection, GoogleSqlDatabaseInstance, GoogleSqlUser } from '../../providers/google-beta';
 
 interface DatabaseOptions {
+    provider: TerraformProvider;
     networkId: string;
 }
 
 export class Database extends Resource {
 
-    constructor(scope: Construct, id: string, { networkId }: DatabaseOptions) {
+    constructor(scope: Construct, id: string, { networkId, provider }: DatabaseOptions) {
         super(scope, id);
         const privateIpAddress = new GoogleComputeGlobalAddress(this, "private_ip_address", {
             addressType: "INTERNAL",
@@ -16,6 +17,7 @@ export class Database extends Resource {
             network: networkId,
             prefixLength: 16,
             purpose: "VPC_PEERING",
+            provider
         });
         const googleServiceNetworkingConnectionPrivateVpcConnection =
             new GoogleServiceNetworkingConnection(this, "private_vpc_connection", {
@@ -43,6 +45,7 @@ export class Database extends Resource {
                     },
                     tier: "db-f1-micro",
                 },
+                provider
             }
         );
 
@@ -50,6 +53,7 @@ export class Database extends Resource {
             instance: dbInstance.name,
             name: "me",
             password: this.randomString(),
+            provider
           });
     }
 

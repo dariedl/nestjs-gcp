@@ -25,7 +25,7 @@ class MyStack extends TerraformStack {
       name:  "cdktf-test", 
       provider});
     const networkId = vpc.getId();
-    new Database(this, 'db', {networkId});
+    new Database(this, 'db', {networkId, provider});
   }
 }
 const app = new App();

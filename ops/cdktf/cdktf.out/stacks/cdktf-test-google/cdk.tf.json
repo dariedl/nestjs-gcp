@@ -31,14 +31,14 @@
   },
   "resource": {
     "google_compute_network": {
-      "vpc_vpc_network_BF9C3612": {
+      "vpc_network_A873BE34": {
         "auto_create_subnetworks": false,
         "name": "cdktf-test",
         "provider": "google-beta",
         "//": {
           "metadata": {
-            "path": "cdktf-test-google/vpc/vpc_network",
-            "uniqueId": "vpc_vpc_network_BF9C3612"
+            "path": "cdktf-test-google/vpc/network",
+            "uniqueId": "vpc_network_A873BE34"
           }
         }
       }
@@ -47,9 +47,10 @@
       "db_private_ip_address_D699A421": {
         "address_type": "INTERNAL",
         "name": "private-ip-address",
-        "network": "${google_compute_network.vpc_vpc_network_BF9C3612.id}",
+        "network": "${google_compute_network.vpc_network_A873BE34.id}",
         "prefix_length": 16,
         "purpose": "VPC_PEERING",
+        "provider": "google-beta",
         "//": {
           "metadata": {
             "path": "cdktf-test-google/db/private_ip_address",
@@ -60,7 +61,7 @@
     },
     "google_service_networking_connection": {
       "db_private_vpc_connection_B8083533": {
-        "network": "${google_compute_network.vpc_vpc_network_BF9C3612.id}",
+        "network": "${google_compute_network.vpc_network_A873BE34.id}",
         "reserved_peering_ranges": [
           "${google_compute_global_address.db_private_ip_address_D699A421.name}"
         ],
@@ -83,10 +84,11 @@
           "tier": "db-f1-micro",
           "ip_configuration": {
             "ipv4_enabled": false,
-            "private_network": "${google_compute_network.vpc_vpc_network_BF9C3612.id}"
+            "private_network": "${google_compute_network.vpc_network_A873BE34.id}"
           }
         },
         "depends_on": [],
+        "provider": "google-beta",
         "//": {
           "metadata": {
             "path": "cdktf-test-google/db/master",
@@ -99,7 +101,8 @@
       "db_users_7C877B3F": {
         "instance": "${google_sql_database_instance.db_master_39E735CE.name}",
         "name": "me",
-        "password": "Y5MTIwODc5",
+        "password": "I1MTQ3MDQ3",
+        "provider": "google-beta",
         "//": {
           "metadata": {
             "path": "cdktf-test-google/db/users",
@@ -111,7 +114,7 @@
   },
   "output": {
     "vpc_name_809BA51C": {
-      "value": "${google_compute_network.vpc_vpc_network_BF9C3612.name}"
+      "value": "${google_compute_network.vpc_network_A873BE34.name}"
     }
   }
 }
