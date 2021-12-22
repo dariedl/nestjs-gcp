@@ -67,12 +67,12 @@ export class Database extends Resource {
         this.username = this.user.name;
         this.password = this.user.password;
 
-        const db = new GoogleSqlDatabase(this, "database", {
+        new GoogleSqlDatabase(this, "database", {
             name: 'my-nestjs-db',
             instance: dbInstance.name,
             provider
         });
-        this.dbName = db.name;
+        this.dbName = 'my-nestjs-db';
     }
 
     public getConfig() {

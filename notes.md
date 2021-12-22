@@ -14,4 +14,5 @@ Then build and push image to gcloud with gcloud builds submit
 
 - the convert for cloudservice returned an array at annotation and limits, where an object of keys was expected.
 
-- resource name limit is not clear
+- for instances created with new from terraform you can access the variables but they are placeholder strings (for example sqlUser.name return TokenXXX instead of the actual name). So
+you cannot log it or use it, but for cloudformation templates they are later replaced in the cdktf.json with the actual values

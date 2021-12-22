@@ -187,7 +187,7 @@
                 "env": [
                   {
                     "name": "DATABASE_URL",
-                    "value": "postgresql://${google_sql_user.db_users_7C877B3F.name}:${google_sql_user.db_users_7C877B3F.password}@${google_compute_global_address.db_private_ip_address_D699A421.address}:5432/${google_sql_database.db_database_485237BB.name}"
+                    "value": "postgresql://${google_sql_user.db_users_7C877B3F.name}:${google_sql_user.db_users_7C877B3F.password}@${google_compute_global_address.db_private_ip_address_D699A421.address}:5432/my-nestjs-db"
                   }
                 ],
                 "resources": {

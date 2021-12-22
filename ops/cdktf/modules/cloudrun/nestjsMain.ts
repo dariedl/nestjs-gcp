@@ -14,7 +14,6 @@ export class NestJsMain extends Resource {
 
     constructor(scope: Construct, id: string, { provider, sqlUser, vpcConnectorName, dbConnectionUrl, projectId }: NestJsMainOptions) {
         super(scope, id);
-
         const cloudRunService = new GoogleCloudRunService(
             this,
             "cdktf-service",
