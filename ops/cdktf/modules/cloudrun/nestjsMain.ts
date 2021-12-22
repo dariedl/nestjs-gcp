@@ -1,4 +1,4 @@
-import { Resource, TerraformProvider, TerraformResource } from "cdktf";
+import { Resource, TerraformOutput, TerraformProvider, TerraformResource } from "cdktf";
 import { Construct } from "constructs";
 import { DataGoogleIamPolicy, GoogleCloudRunService, GoogleCloudRunServiceIamPolicy } from "../../.gen/providers/google-beta";
 
@@ -80,6 +80,14 @@ export class NestJsMain extends Resource {
             });
         /*This allows the Terraform resource name to match the original name. You can remove the call if you don't need them to match.*/
         cloudRunServiceIamPolicyNoauth.overrideLogicalId("noauth");
+
+        new TerraformOutput(this, "cdktfcloudrunUrl", {
+            value: "${" + cloudRunService.fqn + ".status[0].url}",
+          });
+      
+          new TerraformOutput(this, "cdktfcloudrunUrlN", {
+            value: cloudRunService.status("0").url,
+          });
     }
 
 }

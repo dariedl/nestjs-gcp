@@ -8,6 +8,8 @@ Then build and push image to gcloud with gcloud builds submit
 # CDKTF
 
 - there is no cdktf tool to fix a broken state, not sure if normal terraform can be used here instead
+- cdktf diff shows less information than terraform plan
+
 - dependsOn property which was imported has mismatching types, need to figure out if this is a problem that can be ignored or if the dependsOn is even working
 
 - at startup cloudrun would fail, because there are no postgresql tables created. Would need to decouple the cloudrun from the database

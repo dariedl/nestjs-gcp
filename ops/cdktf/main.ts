@@ -17,8 +17,8 @@ class MyStack extends TerraformStack {
     });
     
     const provider = new GoogleBetaProvider(this, 'google', {      
-      region: 'europe-west1',    
-      zone: 'europe-west1-a',
+      region: 'europe-west3',    
+      zone: 'europe-west3-a',
       project: projectId,
     });
 

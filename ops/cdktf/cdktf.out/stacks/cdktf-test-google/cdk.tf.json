@@ -24,8 +24,8 @@
     "google-beta": [
       {
         "project": "just-experience-335708",
-        "region": "europe-west1",
-        "zone": "europe-west1-a"
+        "region": "europe-west3",
+        "zone": "europe-west3-a"
       }
     ]
   },
@@ -228,6 +228,12 @@
   "output": {
     "vpc_name_809BA51C": {
       "value": "${google_compute_network.vpc_network_A873BE34.name}"
+    },
+    "nestjs_cdktfcloudrunUrl_4FC20CE2": {
+      "value": "${google_cloud_run_service.nestjs_cdktf-service_4C1C7440.status[0].url}"
+    },
+    "nestjs_cdktfcloudrunUrlN_EF008BDC": {
+      "value": "${google_cloud_run_service.nestjs_cdktf-service_4C1C7440.status.0.url}"
     }
   },
   "data": {
